@@ -33,6 +33,7 @@ public class AppUserService {
         dto.roles().forEach(r -> {
             Role role = roleRepository.findByRole(RoleName.valueOf(r))
                     .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+            roles.add(role);
         });
         appUser.setRoles(roles);
         appUserRepository.save(appUser);
