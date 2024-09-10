@@ -1,4 +1,4 @@
-package com.aghairsalon.authorization_server;
+package com.aghairsalon.authorizationserver;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

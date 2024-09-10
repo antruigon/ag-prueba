@@ -1,4 +1,4 @@
-package com.aghairsalon.authorization_server;
+package com.aghairsalon.authorizationserver;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
