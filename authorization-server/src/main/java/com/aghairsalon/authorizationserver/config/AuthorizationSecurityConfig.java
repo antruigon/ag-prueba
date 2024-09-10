@@ -2,6 +2,7 @@ package com.aghairsalon.authorizationserver.config;
 
 import com.aghairsalon.authorizationserver.federated.FederatedIdentityConfigurer;
 import com.aghairsalon.authorizationserver.federated.UserRepositoryOAuth2UserHandler;
+import com.aghairsalon.authorizationserver.repository.GoogleUserRepository;
 import com.aghairsalon.authorizationserver.service.ClientService;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
@@ -48,6 +49,7 @@ public class AuthorizationSecurityConfig {
 
     private final PasswordEncoder passwordEncoder;
     private final ClientService clientService;
+    private final GoogleUserRepository googleUserRepository;
 
     @Bean
     @Order(1)
@@ -64,7 +66,7 @@ public class AuthorizationSecurityConfig {
     @Order(2)
     public SecurityFilterChain webSecurityFilterChain(HttpSecurity http) throws Exception {
         FederatedIdentityConfigurer federatedIdentityConfigurer = new FederatedIdentityConfigurer()
-                .oauth2UserHandler(new UserRepositoryOAuth2UserHandler());
+                .oauth2UserHandler(new UserRepositoryOAuth2UserHandler(googleUserRepository));
         http
                 .authorizeHttpRequests(authorize ->
                         authorize
@@ -78,49 +80,47 @@ public class AuthorizationSecurityConfig {
     }
 
 
-//    @Bean
-//    public UserDetailsService userDetailsService(){
-//        UserDetails userDetails = User.withUsername("user")
-//                .password("{noop}user")
-//                .authorities("ROLE_USER")
-//                .build();
-//        return new InMemoryUserDetailsManager(userDetails);
-//    }
+   /* @Bean
+    public UserDetailsService userDetailsService(){
+        UserDetails userDetails = User.withUsername("user")
+                .password("{noop}user")
+                .authorities("ROLE_USER")
+                .build();
+        return new InMemoryUserDetailsManager(userDetails);
+    }*/
+/*
+    @Bean
+    public RegisteredClientRepository registeredClientRepository(){
+        RegisteredClient registeredClient = RegisteredClient.withId(UUID.randomUUID().toString())
+                .clientId("client")
+                .clientSecret(passwordEncoder.encode("secret"))
+                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+                .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
+                .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
+                .redirectUri("https://oauthdebugger.com/debug")
+                .scope(OidcScopes.OPENID)
+                .clientSettings(clientSettings())
+                .build();
+        return new InMemoryRegisteredClientRepository(registeredClient);
+    }*/
 
-//    @Bean
-//    public RegisteredClientRepository registeredClientRepository(){
-//        RegisteredClient registeredClient = RegisteredClient.withId(UUID.randomUUID().toString())
-//                .clientId("client")
-//                .clientSecret(passwordEncoder.encode("secret"))
-//                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-//                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-//                .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-//                .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
-//                .redirectUri("https://oauthdebugger.com/debug")
-//                .scope(OidcScopes.OPENID)
-//                .clientSettings(clientSettings())
-//                .build();
-//        return new InMemoryRegisteredClientRepository(registeredClient);
-//    }
-
-//    @Bean
-//    public ClientSettings clientSettings(){
-//        return ClientSettings.builder().requireProofKey(true).build();
-//    }
+    /* @Bean
+    public ClientSettings clientSettings(){
+        return ClientSettings.builder().requireProofKey(true).build();
+    }
+    */
 
     @Bean
-    public OAuth2TokenCustomizer<JwtEncodingContext> tokenCustomizer() {
+    public OAuth2TokenCustomizer<JwtEncodingContext> tokenCustomizer(){
         return context -> {
-          Authentication principal = context.getPrincipal();
-            if (context.getTokenType().getValue().equals("id_token")) {
-                context.getClaims().claim("token_type", "id_token");
+            Authentication principal = context.getPrincipal();
+            if(context.getTokenType().getValue().equals("id_token")){
+                context.getClaims().claim("token_type", "id token");
             }
-
-            if (context.getTokenType().getValue().equals("access_token")) {
-                context.getClaims().claim("token_type", "access_token");
-                Set<String> roles = principal.getAuthorities().stream()
-                        .map(GrantedAuthority::getAuthority)
-                        .collect(Collectors.toSet());
+            if(context.getTokenType().getValue().equals("access_token")){
+                context.getClaims().claim("token_type", "access token");
+                Set<String> roles = principal.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toSet());
                 context.getClaims().claim("roles", roles).claim("username", principal.getName());
             }
         };
@@ -145,7 +145,6 @@ public class AuthorizationSecurityConfig {
     public OAuth2AuthorizationConsentService authorizationConsentService() {
         return new InMemoryOAuth2AuthorizationConsentService();
     }
-
 
     @Bean
     public AuthorizationServerSettings authorizationServerSettings(){
