@@ -21,9 +21,7 @@ import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.oauth2.server.authorization.InMemoryOAuth2AuthorizationConsentService;
 import org.springframework.security.oauth2.server.authorization.InMemoryOAuth2AuthorizationService;
-import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationConsentService;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
@@ -144,10 +142,10 @@ public class AuthorizationSecurityConfig {
         return new InMemoryOAuth2AuthorizationService();
     }
 
-    @Bean
-    public OAuth2AuthorizationConsentService authorizationConsentService() {
-        return new InMemoryOAuth2AuthorizationConsentService();
-    }
+//    @Bean
+//    public OAuth2AuthorizationConsentService authorizationConsentService() {
+//        return new InMemoryOAuth2AuthorizationConsentService();
+//    }
 
     @Bean
     public AuthorizationServerSettings authorizationServerSettings(){
