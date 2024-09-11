@@ -9,5 +9,6 @@ export const environment = {
     code_challenge_method: 'S256',
     code_challenge: 'nYj265odKbrvyld8kxovZqAE6hnCuSUuhMnwXXSjq3w',
     code_verifier: 'CE5SxaQv8clIx5DDb9xrkTpKlrCInLAvaDJInUoQtw6',
-    token_url: 'http://localhost:9000/oauth2/token'
+    token_url: 'http://localhost:9000/oauth2/token',
+    grant_type: 'authorization_code'
 };
