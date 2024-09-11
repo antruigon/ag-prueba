@@ -11,6 +11,7 @@ import { HttpParams } from '@angular/common/http';
 export class MenuComponent implements OnInit {
   
   authorize_uri = environment.authorized_uri;
+  logout_uri = environment.logout_url;
 
   params: any =  {
     client_id: environment.client_id,
@@ -34,7 +35,7 @@ export class MenuComponent implements OnInit {
   }
 
   onLogout(): void {
-
+    location.href = this.logout_uri;
   }
 
 }
