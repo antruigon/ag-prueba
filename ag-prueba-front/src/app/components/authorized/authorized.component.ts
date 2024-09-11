@@ -23,12 +23,14 @@ export class AuthorizedComponent implements OnInit {
   ngOnInit(): void {
     this.activatedRoute.queryParams.subscribe(data => {
       this.code = data["code"];
-      this.getToken();
+      const codeVerifier = this.tokenService.getVerifier();
+      this.tokenService.deleteVerifier();
+      this.getToken(this.code, codeVerifier);
     });
   }
 
-  getToken(): void {
-    this.authService.getToken(this.code).subscribe(
+  getToken(code: string, codeVerifier: string): void {
+    this.authService.getToken(code, codeVerifier).subscribe(
       data => {
         this.tokenService.setTokens(data.access_token, data.refresh_token);
         this.router.navigate(['']);
