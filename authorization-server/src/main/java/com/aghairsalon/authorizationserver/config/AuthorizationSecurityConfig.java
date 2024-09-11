@@ -54,6 +54,8 @@ public class AuthorizationSecurityConfig {
     private final ClientService clientService;
     private final GoogleUserRepository googleUserRepository;
 
+    private static final String CUSTOM_CONSENT_PAGE = "/oauth2/consent";
+
     @Bean
     @Order(1)
     public SecurityFilterChain authSecurityFilterChain(HttpSecurity http) throws Exception {
@@ -61,6 +63,7 @@ public class AuthorizationSecurityConfig {
         http.csrf(csrf -> csrf.ignoringRequestMatchers("/auth/**", "/client/**"));
         OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
         http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
+                .authorizationEndpoint(auth -> auth.consentPage(CUSTOM_CONSENT_PAGE))
                 .oidc(Customizer.withDefaults());	// Enable OpenID Connect 1.0
         http.oauth2ResourceServer(resource -> resource.jwt(Customizer.withDefaults()));
         http.exceptionHandling(exceptions -> exceptions.defaultAuthenticationEntryPointFor(
